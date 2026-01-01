@@ -1,0 +1,4 @@
+{
+  "buildCommand": "next build",
+  "installCommand": "rm -rf node_modules package-lock.json && npm install && npx prisma generate"
+}

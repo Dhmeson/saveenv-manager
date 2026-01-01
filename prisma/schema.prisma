@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum UserRole {
+  ADMIN
+  USER
+}
+
+// Modelos principais
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  emailVerified DateTime?
+  password      String
+  role          UserRole  @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+    // Relacionamentos
+  ownedProjects StoredProject[]
+  adminProfile  Admin?
+
+  @@map("users")
+}
+
+// Tabela de Administradores - Gerencia tudo do sistema
+model Admin {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  isActive    Boolean  @default(true)
+  permissions Json?    // Permissões específicas do admin
+  lastLogin   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relacionamento
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("admins")
+}
+
+// Projetos
+model StoredProject {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  folderIcon  String?
+  environment String   @default("default")
+  ownerId     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  owner     User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  variables ProjectEnvVar[]
+
+  @@map("stored_projects")
+}
+
+// Variáveis de Ambiente do Projeto
+model ProjectEnvVar {
+  id        String        @id @default(cuid())
+  projectId Int
+  name      String
+  encrypted String // Valor criptografado  
+  project   StoredProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@unique([projectId, name])
+  @@map("project_env_vars")
+}
+
+// Logs de Auditoria
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  action     String // CREATE_PROJECT, DELETE_KEY, INVITE_MEMBER, etc.
+  resource   String? // projects, keys, etc.
+  resourceId String?
+  metadata   Json? // Dados adicionais sobre a ação
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+  
+  @@map("audit_logs")
+}
+
+// Tokens de reset de senha
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String
+  tokenSalt String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@map("password_reset_tokens")
+}

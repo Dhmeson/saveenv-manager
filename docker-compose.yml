@@ -1,0 +1,43 @@
+services:
+  saveenv:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://saveenv:saveenv@postgres:5432/saveenv
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET:-change-this-in-production}
+      - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-change-this-in-production}
+      - RESEND_KEY=${RESEND_KEY:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - saveenv-network
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=saveenv
+      - POSTGRES_PASSWORD=saveenv
+      - POSTGRES_DB=saveenv
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - saveenv-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U saveenv"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:
+
+networks:
+  saveenv-network:
+    driver: bridge

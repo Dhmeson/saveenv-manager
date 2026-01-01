@@ -1,0 +1,7 @@
+# .eslintignore
+app/generated/
+**/generated/
+**/*.generated.js
+**/*.generated.ts
+node_modules/
+.next/
