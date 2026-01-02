@@ -37,7 +37,7 @@ export default function Sidebar() {
           isMobileOpen ? 'translate-x-0' : '-translate-x-full'
         } lg:translate-x-0 lg:static lg:z-auto`}
       >
-        <div className="relative h-full overflow-hidden border-r border-white/10 bg-white/5 backdrop-blur">
+        <div className="relative h-full overflow-hidden border-r border-white/10 bg-white/5 backdrop-blur isolate">
           <div className="pointer-events-none absolute -left-16 -top-16 h-48 w-48 rounded-full bg-indigo-500/20 blur-3xl" />
           <div className="pointer-events-none absolute -right-16 -bottom-16 h-48 w-48 rounded-full bg-fuchsia-500/20 blur-3xl" />
 

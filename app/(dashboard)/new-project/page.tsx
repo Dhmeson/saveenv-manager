@@ -7,8 +7,7 @@ import { toast } from 'sonner'
 import { useQueryClient } from '@tanstack/react-query'
 import { ENVIRONMENTS, iconOptions, ICONS } from '@/app/components/FolderIcon'
 import { PasteButton } from '@/app/components/PasteButton'
-import { useProjects } from '@/app/contexts'
-import { useSession } from 'next-auth/react'
+
 
 
 export default function NewProjectPage() {
@@ -26,8 +25,7 @@ export default function NewProjectPage() {
   const envPickerRef = useRef<HTMLDivElement | null>(null)
 
   const queryClient = useQueryClient()
-  const {projects}=useProjects()
-  const {data:session}=useSession()
+  
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -171,7 +169,7 @@ export default function NewProjectPage() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      <h1 className="bg-gradient-to-br from-white to-white/70 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent md:text-4xl">
+      <h1 className="bg-linear-to-br from-white to-white/70 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent md:text-4xl">
         New Project
       </h1>
 

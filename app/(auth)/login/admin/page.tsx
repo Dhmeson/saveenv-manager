@@ -6,7 +6,6 @@ import Link from 'next/link'
 import { Shield, Lock, Eye, EyeOff } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { toast } from 'sonner'
-import Image from 'next/image'
 
 export default function AdminLoginPage() {
   const { status } = useSession()
@@ -51,7 +50,7 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-950 via-indigo-950 to-purple-900">
+    <div className="relative min-h-screen overflow-hidden bg-linear-to-br from-slate-950 via-indigo-950 to-purple-900">
       <div className="pointer-events-none absolute -left-32 -top-32 h-72 w-72 rounded-full bg-indigo-600/30 blur-3xl" />
       <div className="pointer-events-none absolute -right-32 -bottom-32 h-72 w-72 rounded-full bg-fuchsia-600/30 blur-3xl" />
 
@@ -61,7 +60,7 @@ export default function AdminLoginPage() {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-indigo-500/30 bg-indigo-500/10">
               <Shield className="h-8 w-8 text-indigo-300" />
             </div>
-            <h1 className="bg-gradient-to-br from-white to-white/70 bg-clip-text text-2xl font-extrabold tracking-tight text-transparent">Admin Login</h1>
+            <h1 className="bg-linear-to-br from-white to-white/70 bg-clip-text text-2xl font-extrabold tracking-tight text-transparent">Admin Login</h1>
             <p className="text-sm text-white/70">Sign in as administrator</p>
           </div>
 

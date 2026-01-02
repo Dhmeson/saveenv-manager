@@ -51,7 +51,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-950 via-indigo-950 to-purple-900">
+    <div className="relative min-h-screen overflow-hidden bg-linear-to-br from-slate-950 via-indigo-950 to-purple-900">
       <div className="pointer-events-none absolute -left-32 -top-32 h-72 w-72 rounded-full bg-indigo-600/30 blur-3xl" />
       <div className="pointer-events-none absolute -right-32 -bottom-32 h-72 w-72 rounded-full bg-fuchsia-600/30 blur-3xl" />
 
@@ -61,7 +61,7 @@ export default function LoginPage() {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-transparent">
               <Image src="/Logo.png" alt="SaveEnv" width={40} height={40} />
             </div>
-            <h1 data-testid="login-title" className="bg-gradient-to-br from-white to-white/70 bg-clip-text text-2xl font-extrabold tracking-tight text-transparent">Saveenv</h1>
+            <h1 data-testid="login-title" className="bg-linear-to-br from-white to-white/70 bg-clip-text text-2xl font-extrabold tracking-tight text-transparent">Saveenv</h1>
             <p className="text-sm text-white/70">Sign in to your account</p>
           </div>
 

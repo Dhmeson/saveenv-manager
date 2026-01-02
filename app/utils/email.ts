@@ -1,17 +1,23 @@
 import { Resend } from 'resend'
+import { env } from './env'
 
-const resend = new Resend(process.env.RESEND_KEY)
+const resend = new Resend(env.RESEND_KEY || '')
+const port = env.PORT || 4001
 
 export interface EmailData {
   to: string
   subject: string
   html: string
+  from?: string // Email "from" personalizado (opcional)
 }
 
 export async function sendEmail(emailData: EmailData) {
   try {
+    // Usa o email "from" personalizado se fornecido, senão usa a variável de ambiente
+    const fromEmail = emailData.from || env.RESEND_FROM_EMAIL
+    
     const { data, error } = await resend.emails.send({
-      from: 'Saveenv <noreply@contact.saveenv.com>',
+      from: fromEmail,
       to: emailData.to,
       subject: emailData.subject,
       html: emailData.html,
@@ -28,14 +34,19 @@ export async function sendEmail(emailData: EmailData) {
     throw error
   }
 }
+//add variable for port
+
 
 export function generateResetPasswordEmailHTML(
   email: string,
   compoundToken: string
 ) {
-  const localhost = `${'http://localhost:3000'}/login/reset?t=${encodeURIComponent(compoundToken)}`
-  const production = `${'https://saveenv.com'}/login/reset?t=${encodeURIComponent(compoundToken)}`
-  const resetUrl = process.env.NODE_ENV === 'production' ? production : localhost
+  const localhost = `${'http://localhost:' + port}`//uso sem domain
+  const domain = env.DOMAIN || localhost
+
+  const production = `${domain}/login/reset?t=${encodeURIComponent(compoundToken)}`//uso com domain
+  const resetUrl = env.NODE_ENV === 'production' ? production : localhost
+
   return `
   <!DOCTYPE html>
 <html>

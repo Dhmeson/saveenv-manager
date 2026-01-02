@@ -8,6 +8,8 @@ import { verifyPassword } from "@/app/utils/crypto"
 import { UserRole } from "@prisma/client"
 
 export const authOptions: NextAuthOptions = {
+  // NEXTAUTH_SECRET é usado automaticamente pelo NextAuth se definido em process.env
+  // Não precisa ser passado explicitamente aqui, mas pode ser definido para maior controle
   providers: [
     Credentials({
       name: "Credentials",

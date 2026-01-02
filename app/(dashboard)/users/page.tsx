@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { UserRole } from '@prisma/client'
-import { Users, Plus, Trash2, Shield, User as UserIcon } from 'lucide-react'
+import {  Plus, Trash2, Shield, User as UserIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface User {
@@ -49,7 +49,7 @@ export default function UsersPage() {
       if (!res.ok) throw new Error('Failed to fetch users')
       const data = await res.json()
       setUsers(data)
-    } catch (error) {
+    } catch  {
       toast.error('Failed to load users')
     } finally {
       setLoading(false)
@@ -124,7 +124,7 @@ export default function UsersPage() {
     <div className="space-y-6 max-w-7xl mx-auto">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="bg-gradient-to-br from-white to-white/70 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent md:text-4xl">
+          <h1 className="bg-linear-to-br from-white to-white/70 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent md:text-4xl">
             User Management
           </h1>
           <p className="text-white/70 mt-2">Create and manage users</p>

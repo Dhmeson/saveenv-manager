@@ -4,13 +4,15 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "${PORT:-4001}:4001"
     environment:
       - DATABASE_URL=postgresql://saveenv:saveenv@postgres:5432/saveenv
-      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET:-change-this-in-production}
-      - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
-      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-change-this-in-production}
-      - RESEND_KEY=${RESEND_KEY:-}
+      - PORT=4001
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET:-} #example: change-this-in-production
+      - DOMAIN=localhost # or your domain example: https://saveenv.com
+       #caso queira usar resend para enviar emails, use as variaveis abaixo
+      - RESEND_KEY=${RESEND_KEY:-} #example: resend-key-here
+      - RESEND_FROM_EMAIL=${RESEND_FROM_EMAIL:-} #example: Saveenv <noreply@contact.saveenv.com>
     depends_on:
       postgres:
         condition: service_healthy
