@@ -4,16 +4,12 @@ import { z } from 'zod'
 const envSchema = z.object({
   // Variáveis obrigatórias
   DATABASE_URL: z.url().min(1, 'DATABASE_URL é obrigatória'),
-  RESEND_KEY: z.string().optional(),
   
   // Variáveis opcionais com valores padrão
   PORT: z.string().default('5001'),
   DOMAIN: z.string().optional(),
   NODE_ENV: z.enum(['development', 'production']).default('development'),
-  
-  // Configuração de Email (Resend)
-  RESEND_FROM_EMAIL: z.string().default('Saveenv <noreply@contact.saveenv.com>'),
-  
+    
   // NextAuth (recomendado em produção)
   NEXTAUTH_SECRET: z.string()
 })

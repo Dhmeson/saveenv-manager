@@ -4,3 +4,7 @@ out
 build
 .env.local
 README_AUTH.md
+/github/workflows
+DOCKER_HUB_PUSH_GUIDE.md
+DOCKER_HUB_DESCRIPTION.md
+.eslintignore

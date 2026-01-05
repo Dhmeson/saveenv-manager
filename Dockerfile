@@ -1,67 +1,56 @@
 # 1. Dependências
-FROM node:20-alpine AS deps
-RUN apk add --no-cache libc6-compat openssl
+FROM oven/bun:1.1-alpine AS deps
+# Prisma precisa de openssl e libc6-compat para o engine de query
+RUN apk add --no-cache openssl libc6-compat
 WORKDIR /app
-COPY package*.json ./
-COPY prisma ./prisma/
-RUN npm install
-RUN npx prisma generate
 
-# 2. Build
-FROM node:20-alpine AS builder
+COPY package.json bun.lockb ./
+COPY prisma ./prisma/
+
+# Bun install é extremamente rápido e já lida com resoluções de pacotes
+RUN bun install --frozen-lockfile
+RUN bunx prisma generate
+
+# 2. Builder
+FROM oven/bun:1.1-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/prisma ./prisma
 COPY . .
-ENV NEXT_TELEMETRY_DISABLED 1
-RUN npm run build
 
-# 3. Runner
-FROM node:20-alpine AS runner
+ENV NEXT_TELEMETRY_DISABLED=1
+# Next.js funciona perfeitamente com Bun para o build
+RUN bun run build
+
+# 3. Runner (Camada Final Ultra-Leve)
+FROM oven/bun:1.1-alpine AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+# Atualização de segurança para limpar vulnerabilidades da base Alpine
+RUN apk update && apk upgrade --no-cache && \
+    apk add --no-cache openssl dumb-init
 
-# Instalar dependências do sistema
-RUN apk add --no-cache openssl
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Criar usuário de segurança
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# Criar usuário não-root
+RUN addgroup --system --gid 1001 bunjs && \
+    adduser --system --uid 1001 bunuser
 
-# Copia arquivos necessários (Next.js standalone mode)
+# Copiamos o standalone do Next.js
+# Nota: O Next.js standalone ainda usa 'node server.js' internamente, 
+# mas o Bun consegue executar esse arquivo com alta performance.
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/prisma ./prisma
+COPY --from=builder --chown=bunuser:bunjs /app/.next/standalone ./
+COPY --from=builder --chown=bunuser:bunjs /app/.next/static ./.next/static
+COPY --from=builder --chown=bunuser:bunjs /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder --chown=bunuser:bunjs /app/prisma ./prisma
+COPY --from=builder --chown=bunuser:bunjs /app/entrypoint.sh ./entrypoint.sh
 
-# Copiar Prisma Client gerado e node_modules necessários
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
+RUN chmod +x /app/entrypoint.sh
 
-# Instalar Prisma CLI localmente (acessível pelo usuário nextjs)
-RUN npm install -g prisma@6.14.0
+USER bunuser
 
-# Criar diretório de cache com permissões corretas
-RUN mkdir -p /app/.next/cache && \
-    chown -R nextjs:nodejs /app
 
-# Criar script de inicialização
-RUN echo '#!/bin/sh' > /app/entrypoint.sh && \
-    echo 'set -e' >> /app/entrypoint.sh && \
-    echo 'echo "Waiting for database..."' >> /app/entrypoint.sh && \
-    echo 'sleep 3' >> /app/entrypoint.sh && \
-    echo 'echo "Generating Prisma Client..."' >> /app/entrypoint.sh && \
-    echo 'npx prisma generate || true' >> /app/entrypoint.sh && \
-    echo 'echo "Synchronizing database with Prisma..."' >> /app/entrypoint.sh && \
-    echo 'npx prisma db push --accept-data-loss || true' >> /app/entrypoint.sh && \
-    echo 'echo "Starting application..."' >> /app/entrypoint.sh && \
-    echo 'exec node server.js' >> /app/entrypoint.sh && \
-    chmod +x /app/entrypoint.sh
-
-USER nextjs
-
-#EXPOSE 4001
-
-ENTRYPOINT ["/app/entrypoint.sh"]
+# Usamos o Bun para rodar o servidor standalone
+ENTRYPOINT ["/usr/bin/dumb-init", "--", "/app/entrypoint.sh"]

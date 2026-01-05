@@ -13,7 +13,8 @@
     "db:reset": "prisma migrate reset",
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "start:prod": "prisma db push --accept-data-loss && node server.js"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -30,7 +31,6 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-icons": "^5.5.0",
-    "resend": "^6.0.1",
     "sonner": "^2.0.7",
     "swr": "^2.3.6",
     "zod": "^4.3.4"
@@ -50,5 +50,8 @@
     "tailwindcss": "^4.1.12",
     "tsx": "^4.6.0",
     "typescript": "^5.9.2"
+  },
+  "overrides": {
+    "glob": "^11.1.0"
   }
 }
