@@ -5,10 +5,10 @@ echo "Aguardando banco de dados..."
 
 # Aplica as migrações ou sincroniza o schema do Prisma
 echo "Sincronizando banco de dados com Prisma..."
-npx prisma db push --accept-data-loss # Use 'migrate deploy' se preferir algo mais rígido
+bun prisma db push --accept-data-loss # Use 'migrate deploy' se preferir algo mais rígido
 
 
 
 # Inicia a aplicação
-echo "Iniciando aplicação Next.js..."
-node server.js
+echo "Iniciando aplicação Next.js com Bun..."
+bun server.js

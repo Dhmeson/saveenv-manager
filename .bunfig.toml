@@ -1,0 +1,16 @@
+# Configuração do Bun para o projeto SaveEnv
+
+# Usar o runtime do Bun para melhor performance
+[install]
+# Instalar dependências de forma mais rápida
+auto = true
+
+# Configurações de performance
+[install.scopes]
+# Otimizações para pacotes específicos se necessário
+
+# Configurações de runtime
+[runtime]
+# Garantir que variáveis de ambiente sejam carregadas corretamente
+# O Bun carrega automaticamente arquivos .env, .env.local, etc.
+

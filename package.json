@@ -3,18 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
+    "dev": "bun --bun next dev --turbopack",
+    "build": "bun --bun next build",
+    "start": "bun --bun next start",
     "lint": "next lint",
-    "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:push": "prisma db push",
-    "db:reset": "prisma migrate reset",
-    "db:studio": "prisma studio",
-    "db:seed": "tsx prisma/seed.ts",
-    "postinstall": "prisma generate",
-    "start:prod": "prisma db push --accept-data-loss && node server.js"
+    "check-env": "bun run scripts/check-env.ts",
+    "db:generate": "bunx prisma generate",
+    "db:migrate": "bunx prisma migrate dev",
+    "db:push": "bunx prisma db push",
+    "db:reset": "bunx prisma migrate reset",
+    "db:studio": "bunx prisma studio",
+    "db:seed": "bunx tsx prisma/seed.ts",
+    "postinstall": "bunx prisma generate",
+    "start:prod": "bunx prisma db push --accept-data-loss && bun server.js"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

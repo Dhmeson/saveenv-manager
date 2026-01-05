@@ -26,6 +26,126 @@ O SaveEnv foi criado para equipes de desenvolvimento que precisam:
 
 - **Ambientes de produção**: Armazene credenciais de produção de forma segura, com acesso restrito apenas para membros autorizados.
 
+## Desenvolvimento Local com Bun
+
+Este projeto utiliza **Bun** como runtime e gerenciador de pacotes para melhor performance e velocidade.
+
+### Pré-requisitos
+
+- [Bun](https://bun.sh) instalado (versão 1.1 ou superior)
+- PostgreSQL instalado e rodando
+- Variáveis de ambiente configuradas
+
+### Instalação
+
+1. **Clone o repositório** (se ainda não tiver):
+   ```bash
+   git clone <url-do-repositorio>
+   cd saveenv-image
+   ```
+
+2. **Instale as dependências com Bun**:
+   ```bash
+   bun install
+   ```
+
+   O Bun é extremamente rápido e já gera o Prisma Client automaticamente via `postinstall`.
+
+3. **Configure as variáveis de ambiente**:
+   
+   Crie um arquivo `.env.local` na raiz do projeto:
+   ```env
+   DATABASE_URL="postgresql://usuario:senha@localhost:5432/saveenv"
+   NEXTAUTH_SECRET="sua-chave-secreta-forte-aqui"
+   NEXTAUTH_URL="http://localhost:3000"
+   DOMAIN="localhost"
+   ```
+
+4. **Configure o banco de dados**:
+   ```bash
+   # Gerar o Prisma Client (já feito no postinstall, mas pode rodar manualmente)
+   bun run db:generate
+   
+   # Aplicar as migrações ou sincronizar o schema
+   bun run db:push
+   # ou
+   bun run db:migrate
+   ```
+
+5. **Inicie o servidor de desenvolvimento**:
+   ```bash
+   bun run dev
+   ```
+
+   A aplicação estará disponível em `http://localhost:3000`
+
+### Scripts Disponíveis
+
+- `bun run dev` - Inicia o servidor de desenvolvimento com Turbopack
+- `bun run build` - Cria o build de produção
+- `bun run start` - Inicia o servidor de produção
+- `bun run lint` - Executa o linter
+- `bun run check-env` - Verifica se as variáveis de ambiente estão configuradas corretamente
+- `bun run db:generate` - Gera o Prisma Client
+- `bun run db:migrate` - Executa migrações do Prisma
+- `bun run db:push` - Sincroniza o schema com o banco
+- `bun run db:studio` - Abre o Prisma Studio
+- `bun run db:seed` - Executa o seed do banco de dados
+
+### Troubleshooting
+
+#### Erro: "Authentication failed against database server"
+
+Este erro indica que o Prisma não consegue se conectar ao banco de dados. Siga estes passos:
+
+1. **Verifique se as variáveis de ambiente estão configuradas**:
+   ```bash
+   bun run check-env
+   ```
+
+2. **Certifique-se de que o arquivo `.env.local` existe** na raiz do projeto com:
+   ```env
+   DATABASE_URL="postgresql://usuario:senha@localhost:5432/saveenv"
+   NEXTAUTH_SECRET="sua-chave-secreta-forte-aqui"
+   NEXTAUTH_URL="http://localhost:3000"
+   ```
+
+3. **Verifique se o PostgreSQL está rodando**:
+   ```bash
+   # Windows (PowerShell)
+   Get-Service -Name postgresql*
+   
+   # Linux/Mac
+   sudo systemctl status postgresql
+   ```
+
+4. **Regenere o Prisma Client**:
+   ```bash
+   bun run db:generate
+   ```
+
+5. **Teste a conexão com o banco**:
+   ```bash
+   bun run db:push
+   ```
+
+#### Erro: "NEXTAUTH_URL warning"
+
+Adicione `NEXTAUTH_URL` ao seu `.env.local`:
+```env
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+#### Erro: "Conflicting public file and page file for path /favicon.ico"
+
+Este é um aviso do Next.js. Você pode ignorá-lo ou remover o arquivo `app/favicon.ico` se tiver um em `public/favicon.ico` (ou vice-versa).
+
+### Vantagens do Bun
+
+- ⚡ **Instalação ultra-rápida**: Instala dependências muito mais rápido que npm/yarn
+- 🚀 **Runtime performático**: Executa JavaScript/TypeScript nativamente com melhor performance
+- 📦 **Compatível com npm**: Funciona com pacotes npm existentes sem modificações
+- 🔧 **Built-in tools**: Inclui bundler, test runner e outras ferramentas
 
 ## Como usar com Docker Compose
 

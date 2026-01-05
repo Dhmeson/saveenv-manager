@@ -2,7 +2,6 @@
 import { useEffect, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
-import Link from 'next/link'
 import { User, Lock, Eye, EyeOff } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { toast } from 'sonner'
@@ -122,17 +121,6 @@ export default function LoginPage() {
               {loading || pending ? 'Signing in…' : 'Sign in'}
             </button>
 
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-white/70"> </span>
-              <Link href="/login/forgot" className="text-white underline-offset-4 hover:underline">Forgot password?</Link>
-            </div>
-
-            <p className="text-center text-sm text-white/70">
-              Don&apos;t have an account?{' '}
-              <Link href="/plans" className="font-semibold text-white underline-offset-4 hover:underline">
-                Create account
-              </Link>
-            </p>
           </form>
         </div>
       </div>
